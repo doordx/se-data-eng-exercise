@@ -34,5 +34,5 @@ jobs:
             --entry-point process_csv \
             --source=. \
             --region ${{ secrets.GCP_REGION }} \
-            --env-vars "BIGQUERY_DATASET=${{ secrets.BIGQUERY_DATASET }},BIGQUERY_TABLE=${{ secrets.BIGQUERY_TABLE }}" \
+            --set-env-vars "BIGQUERY_DATASET=${{ secrets.BIGQUERY_DATASET }},BIGQUERY_TABLE=${{ secrets.BIGQUERY_TABLE }}" \
             --quiet
