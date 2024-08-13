@@ -37,6 +37,7 @@ jobs:
             --trigger-resource ${{ secrets.BUCKET_NAME }} \
             --trigger-event google.storage.object.finalize \
             --entry-point process_csv \
+            --memory 512MB \
             --source=. \
             --region ${{ secrets.GCP_REGION }} \
             --set-env-vars "BIGQUERY_DATASET=${{ secrets.BIGQUERY_DATASET }},BIGQUERY_TABLE=${{ secrets.BIGQUERY_TABLE }}" \
