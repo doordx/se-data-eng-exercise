@@ -29,7 +29,7 @@ def process_csv(event, context):
     logging.info(f"Downloaded file: {file_name} from bucket: {bucket_name}")
 
     # Load CSV data into a Pandas DataFrame
-    df = pd.read_csv(pd.compat.StringIO(csv_data.decode('utf-8')))
+    df = pd.read_csv(StringIO(csv_data.decode('utf-8')))
 
     # Set up BigQuery client
     bq_client = bigquery.Client()
