@@ -42,10 +42,10 @@ def process_csv(event, context):
 
     # Load the DataFrame to BigQuery
     job_config = bigquery.LoadJobConfig(
-        bigquery.WriteDisposition.WRITE_APPEND,
+        write_disposition=bigquery.WriteDisposition.WRITE_APPEND,
     )
 
-    load_job = bq_client.load_table_from_dataframe(df, table_ref, job_config)
+    load_job = bq_client.load_table_from_dataframe(df, table_ref, job_config=job_config)
     load_job.result()  # Waits for the job to complete
 
     logging.info(f"Loaded {len(df)} rows into {dataset_id}:{table_id}")
