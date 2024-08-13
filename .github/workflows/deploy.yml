@@ -1,0 +1,38 @@
+name: Deploy to Google Cloud Functions
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          version: 'latest'
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GOOGLE_CREDENTIALS }}
+
+      - name: Deploy to Google Cloud Functions
+        run: |
+          gcloud functions deploy movie-upload-function \
+            --runtime python310 \
+            --trigger-resource ${{ secrets.BUCKET_NAME }} \
+            --trigger-event google.storage.object.finalize \
+            --entry-point process_csv \
+            --source=. \
+            --region ${{ secrets.GCP_REGION }} \
+            --env-vars "BIGQUERY_DATASET=${{ secrets.BIGQUERY_DATASET }},BIGQUERY_TABLE=${{ secrets.BIGQUERY_TABLE }}" \
+            --quiet
