@@ -1,6 +1,7 @@
 import logging
 import os
 import pandas as pd
+from io import StringIO
 from google.cloud import bigquery, storage
 
 def process_csv(event, context):
