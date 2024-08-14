@@ -31,6 +31,9 @@ def process_csv(event, context):
     # Load CSV data into a Pandas DataFrame
     df = pd.read_csv(StringIO(csv_data.decode('utf-8')))
 
+    # Convert all columns to strings
+    df = df.astype(str)
+
     # Set up BigQuery client
     bq_client = bigquery.Client()
 
