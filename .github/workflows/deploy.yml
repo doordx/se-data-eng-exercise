@@ -30,15 +30,28 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           service_account_key: ${{ secrets.GOOGLE_CREDENTIALS }}
 
-      - name: Deploy to Google Cloud Functions
+      - name: Deploy to Movies Google Cloud Functions
         run: |
           gcloud functions deploy movie-upload-function \
             --runtime python310 \
             --trigger-resource ${{ secrets.BUCKET_NAME }} \
             --trigger-event google.storage.object.finalize \
-            --entry-point process_csv \
+            --entry-point process_movies_csv \
             --memory 512MB \
             --source=. \
             --region ${{ secrets.GCP_REGION }} \
-            --set-env-vars "BIGQUERY_DATASET=${{ secrets.BIGQUERY_DATASET }},BIGQUERY_TABLE=${{ secrets.BIGQUERY_TABLE }}" \
+            --set-env-vars "BIGQUERY_DATASET=${{ secrets.BIGQUERY_DATASET }},BIGQUERY_TABLE=${{ secrets.BIGQUERY_MOVIES_TABLE }}" \
+            --quiet
+
+      - name: Deploy to Ratings Google Cloud Functions
+        run: |
+          gcloud functions deploy rating-upload-function \
+            --runtime python310 \
+            --trigger-resource ${{ secrets.BUCKET_NAME }} \
+            --trigger-event google.storage.object.finalize \
+            --entry-point process_ratings_csv \
+            --memory 1GB \
+            --source=. \
+            --region ${{ secrets.GCP_REGION }} \
+            --set-env-vars "BIGQUERY_DATASET=${{ secrets.BIGQUERY_DATASET }},BIGQUERY_TABLE=${{ secrets.BIGQUERY_RATINGS_TABLE }}" \
             --quiet
