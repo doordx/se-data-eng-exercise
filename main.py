@@ -35,7 +35,7 @@ def process_ratings_csv(event, context):
 
     process_csv(bucket_name, file_name, os.getenv('BIGQUERY_RATINGS_TABLE'))
 
-def process_csv(bucket_name, file_name, table_name):
+def process_csv(bucket_name, file_name, table_id):
     gcs_client = storage.Client()
     bucket = gcs_client.get_bucket(bucket_name)
     blob = bucket.blob(file_name)
@@ -43,7 +43,6 @@ def process_csv(bucket_name, file_name, table_name):
     # Set up BigQuery client
     bq_client = bigquery.Client()
     dataset_id = os.getenv('BIGQUERY_DATASET')
-    table_id = os.getenv(table_name)
     table_ref = bq_client.dataset(dataset_id).table(table_id)
 
     # Initialize job configuration
