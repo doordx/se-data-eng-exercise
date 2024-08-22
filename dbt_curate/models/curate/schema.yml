@@ -1,0 +1,88 @@
+version: 2
+
+sources:
+  - name: movies_data_manish
+    tables:
+      - name: movies_raw
+      - name: ratings_raw
+      - name: ratings_raw_to_curate
+      - name: movies_raw_to_curate
+
+models:
+  - name: movies_raw_to_curate
+    description: "A starter dbt model"
+    columns:
+      - name: id
+        tests:
+          - not_null
+      - name: adult
+        tests:
+          - assert_type:
+              column_name: adult
+              expected_type: 'BOOLEAN'
+      - name: video
+        tests:
+          - assert_type:
+              column_name: video
+              expected_type: 'BOOLEAN'
+      - name: budget
+        tests:
+          - assert_type:
+              column_name: budget
+              expected_type: 'STRING'
+
+  - name: ratings_raw_to_curate
+    description: "A incremental dbt model"
+    columns:
+      - name: userId
+        tests:
+          - not_null
+          - assert_type:
+              column_name: userId
+              expected_type: 'NUMERIC'
+      - name: movieId
+        tests:
+          - assert_type:
+              column_name: movieId
+              expected_type: 'NUMERIC'
+      - name: timestamp
+        tests:
+          - assert_type:
+              column_name: timestamp
+              expected_type: 'NUMERIC'
+      - name: rating
+        tests:
+          - assert_type:
+              column_name: rating
+              expected_type: 'FLOAT64'
+
+  - name: movie_ratings_pres
+    description: "A presentation view of rating and movie table"
+    columns:
+      - name: movie_id
+        tests:
+          - not_null
+          - assert_type:
+              column_name: movie_id
+              expected_type: 'STRING'
+      - name: title
+        tests:
+          - not_null
+          - assert_type:
+              column_name: title
+              expected_type: 'STRING'
+      - name: number_of_ratings
+        tests:
+          - not_null
+          - assert_type:
+              column_name: number_of_ratings
+              expected_type: 'NUMERIC'
+      - name: rank_movie_by_median_rating
+        tests:
+          - not_null
+          - assert_type:
+              column_name: rank_movie_by_median_rating
+              expected_type: 'NUMERIC'
+
+
+

@@ -75,10 +75,8 @@ def process_ratings_csv(event, context):
     bq_client = bigquery.Client()
     dataset_id = os.getenv('BIGQUERY_DATASET')
     table_id = os.getenv('BIGQUERY_RATINGS_TABLE', 'ratings_raw')
-    logging.info(f"table env name: {os.getenv('BIGQUERY_RATINGS_TABLE')}")
-    logging.info(f"table default name: {table_id}")
     table_ref = bq_client.dataset(dataset_id).table(table_id)
-    logging.info(f"table ref: {table_ref}")
+
     # Initialize job configuration
     job_config = bigquery.LoadJobConfig(
         write_disposition=bigquery.WriteDisposition.WRITE_APPEND,
