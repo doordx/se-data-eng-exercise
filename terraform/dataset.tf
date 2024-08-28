@@ -142,7 +142,14 @@ resource "google_bigquery_table" "table_movies_raw" {
   {
     "name": "load_date",
     "type": "DATETIME",
-    "mode": "NULLABLE"
+    "mode": "NULLABLE",
+    "defaultValueExpression": "CURRENT_DATETIME"
+  },
+  {
+    "name": "is_error",
+    "type": "BOOLEAN",
+    "mode": "NULLABLE",
+    "defaultValueExpression": "false"
   }
 ]
 EOF

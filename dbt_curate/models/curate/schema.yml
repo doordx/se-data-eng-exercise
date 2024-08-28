@@ -7,6 +7,7 @@ sources:
       - name: ratings_raw
       - name: ratings_raw_to_curate
       - name: movies_raw_to_curate
+      - name: latest_ratings
 
 models:
   - name: movies_raw_to_curate
@@ -83,6 +84,3 @@ models:
           - assert_type:
               column_name: rank_movie_by_median_rating
               expected_type: 'NUMERIC'
-
-
-
