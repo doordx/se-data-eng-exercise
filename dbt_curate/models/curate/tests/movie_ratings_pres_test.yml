@@ -1,0 +1,25 @@
+unit_tests:
+  - name: test_movie_rank_by_median_ratings
+    model: movie_ratings_pres
+    given:
+      - input: source('movies_data_manish', 'ratings_raw_to_curate')
+        rows:
+          - { userId: '1', movieId: '1', rating: '5', timestamp: '1425942640', load_time: 2024-08-21 11:28:23.659437 UTC }
+          - { userId: '2', movieId: '2', rating: '4', timestamp: '1425942640', load_time: 2024-08-21 11:28:23.659437 UTC }
+          - { userId: '3', movieId: '2', rating: '3', timestamp: '1425942640', load_time: 2024-08-21 11:28:23.659437 UTC }
+          - { userId: '4', movieId: '1', rating: '2', timestamp: '1425942640', load_time: 2024-08-21 11:28:23.659437 UTC }
+          - { userId: '5', movieId: '5', rating: '5', timestamp: '1425942640', load_time: 2024-08-21 11:28:23.659437 UTC }
+      - input: source('movies_data_manish', 'movies_raw_to_curate')
+        rows:
+          - { adult: false, belongs_to_collection: 'A', budget: '100', genres: 'crime', homepage: 'test', id: '1', imdb_id: '1', original_language: 'english', original_title: 'ABC', title: 'Test-1' }
+          - { adult: false, belongs_to_collection: 'A', budget: '100', genres: 'crime', homepage: 'test', id: '2', imdb_id: '1', original_language: 'english', original_title: 'ABC', title: 'Test-2' }
+          - { adult: false, belongs_to_collection: 'A', budget: '100', genres: 'crime', homepage: 'test', id: '3', imdb_id: '1', original_language: 'english', original_title: 'ABC', title: 'Test-3' }
+          - { adult: false, belongs_to_collection: 'A', budget: '100', genres: 'crime', homepage: 'test', id: '4', imdb_id: '1', original_language: 'english', original_title: 'ABC', title: 'Test-4' }
+          - { adult: false, belongs_to_collection: 'A', budget: '100', genres: 'crime', homepage: 'test', id: '5', imdb_id: '1', original_language: 'english', original_title: 'ABC', title: 'Test-5' }
+    expect:
+      rows:
+        - { movie_id: '5', title: 'Test-5', number_of_ratings: 1, median_rating: 5.0, rank_movie_by_median_rating: 1 }
+        - { movie_id: '1', title: 'Test-1', number_of_ratings: 2, median_rating: 3.5, rank_movie_by_median_rating: 2 }
+        - { movie_id: '2', title: 'Test-2', number_of_ratings: 2, median_rating: 3.5, rank_movie_by_median_rating: 2 }
+        - { movie_id: '3', title: 'Test-3', number_of_ratings: 0, median_rating: null, rank_movie_by_median_rating: 3 }
+        - { movie_id: '4', title: 'Test-4', number_of_ratings: 0, median_rating: null, rank_movie_by_median_rating: 3 }

@@ -15,7 +15,7 @@ WITH median_ratings AS (
 SELECT
     m.id AS movie_id,
     m.title AS title,
-    COUNT(r.rating) AS number_of_ratings,
+    COUNT(DISTINCT r.rating) AS number_of_ratings,
     mr.median_rating AS median_rating,
     DENSE_RANK() OVER (ORDER BY mr.median_rating DESC) AS rank_movie_by_median_rating
 FROM

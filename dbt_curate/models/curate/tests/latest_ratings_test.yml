@@ -1,0 +1,16 @@
+unit_tests:
+  - name: test_get_latest_ratings
+    model: latest_ratings
+    given:
+      - input: source('movies_data_manish', 'ratings_raw_to_curate')
+        rows:
+          - { userId: '1', movieId: '1', rating: '1', timestamp: '1425942640', load_time: 2024-08-21 11:28:23.659437 UTC }
+          - { userId: '2', movieId: '2', rating: '1', timestamp: '1425942640', load_time: 2024-08-22 11:28:23.659437 UTC }
+          - { userId: '1', movieId: '1', rating: '5', timestamp: '1425942640', load_time: 2024-08-23 11:28:23.659437 UTC }
+          - { userId: '4', movieId: '1', rating: '2', timestamp: '1425942640', load_time: 2024-08-24 11:28:23.659437 UTC }
+          - { userId: '2', movieId: '2', rating: '5', timestamp: '1425942640', load_time: 2024-08-25 11:28:23.659437 UTC }
+    expect:
+      rows:
+        - { userId: '1', movieId: '1', rating: '5', timestamp: '1425942640', load_time: 2024-08-23 11:28:23.659437 UTC }
+        - { userId: '4', movieId: '1', rating: '2', timestamp: '1425942640', load_time: 2024-08-24 11:28:23.659437 UTC }
+        - { userId: '2', movieId: '2', rating: '5', timestamp: '1425942640', load_time: 2024-08-25 11:28:23.659437 UTC }

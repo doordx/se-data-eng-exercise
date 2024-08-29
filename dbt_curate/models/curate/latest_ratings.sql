@@ -6,17 +6,18 @@
 
 WITH latest_ratings AS (
     SELECT
-        t1.movieId, t1.userId, t1.rating, t1.load_time, t1.timestamp
+        t1.*
     FROM
         {{ source('movies_data_manish', 'ratings_raw_to_curate') }} t1
-    INNER JOIN
-        {{ source('movies_data_manish', 'ratings_raw_to_curate') }} t2
-    ON
-        (t1.movieId = t2.movieId and t1.userId = t2.userId)
-    GROUP BY
-        t1.movieId, t1.userId, t1.rating, t1.load_time, t1.timestamp
-    ORDER BY
-        t1.load_time
+    WHERE
+        t1.load_time = (
+            SELECT
+                max(t2.load_time)
+            FROM
+                {{ source('movies_data_manish', 'ratings_raw_to_curate') }} t2
+            WHERE
+                t1.movieId = t2.movieId and t1.userId = t2.userId
+            )
 )
 
 SELECT

@@ -11,7 +11,7 @@ WITH source_data AS (
         CAST(movieId as NUMERIC) AS movieId,
         CAST(rating as FLOAT64) AS rating,
         CAST(timestamp as NUMERIC) AS timestamp,
-        CURRENT_TIMESTAMP() AS load_time
+        CAST(load_date as timestamp) AS load_time
     FROM
         {{ source('movies_data_manish', 'ratings_raw') }}
 )

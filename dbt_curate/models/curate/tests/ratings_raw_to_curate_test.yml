@@ -1,0 +1,31 @@
+unit_tests:
+  - name: ratings_raw_to_curate_full_refresh_mode
+    model: ratings_raw_to_curate
+    overrides:
+      macros:
+        is_incremental: false
+    given:
+      - input: source('movies_data_manish', 'ratings_raw')
+        rows:
+          - { userId: '1', movieId: '1', rating: '5', timestamp: '1425942640', load_date: 2024-08-21T11:28:23.659437 }
+    expect:
+      rows:
+        - { userId: '1', movieId: '1', rating: '5', timestamp: '1425942640', load_time: 2024-08-21 11:28:23.659437 UTC }
+  - name: ratings_raw_to_curate_increment_mode
+    model: ratings_raw_to_curate
+    overrides:
+      macros:
+        is_incremental: true
+    given:
+      - input: source('movies_data_manish', 'ratings_raw')
+        rows:
+          - { userId: '1', movieId: '1', rating: '5', timestamp: '1425942640', load_date: 2024-08-21T10:28:23.659437 }
+          - { userId: '2', movieId: '2', rating: '4', timestamp: '1425942641', load_date: 2024-08-22T11:28:23.659437 }
+          - { userId: '3', movieId: '3', rating: '5', timestamp: '1425942642', load_date: 2024-08-23T11:28:23.659437 }
+      - input: this
+        rows:
+          - { userId: '1', movieId: '1', rating: '5', timestamp: '1425942640', load_time: 2024-08-21T11:28:23.659437 }
+    expect:
+      rows:
+        - { userId: '2', movieId: '2', rating: '4', timestamp: '1425942641', load_time: 2024-08-22 11:28:23.659437 UTC }
+        - { userId: '3', movieId: '3', rating: '5', timestamp: '1425942642', load_time: 2024-08-23 11:28:23.659437 UTC }
