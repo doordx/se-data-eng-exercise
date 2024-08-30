@@ -68,7 +68,6 @@ def process_ratings_csv(event, context):
 
     rows_to_insert = []
 
-    # Download the CSV file content as a stream and process line by line
     csv_stream = blob.download_as_text().splitlines()
 
     # Read the CSV line by line using the CSV reader
@@ -76,15 +75,13 @@ def process_ratings_csv(event, context):
     header = next(csv_reader)  # Get the header row
 
     for row in csv_reader:
-        # Convert the row to a dictionary with all values as strings
         row_dict = {header[i]: str(row[i]) for i in range(len(header))}
         rows_to_insert.append(row_dict)
 
-        # Insert rows in batches to manage memory usage
-        if len(rows_to_insert) >= 1000:  # Adjust the batch size as needed
+        if len(rows_to_insert) >= 1000:
             bq_client.insert_rows_json(table_ref, rows_to_insert, row_ids=[None]*len(rows_to_insert))
             logging.info(f"Inserted {len(rows_to_insert)} rows into {dataset_id}:{table_id}")
-            rows_to_insert.clear()  # Clear the list to free up memory
+            rows_to_insert.clear()
 
     # Insert any remaining rows
     if rows_to_insert:

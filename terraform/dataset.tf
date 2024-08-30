@@ -146,10 +146,10 @@ resource "google_bigquery_table" "table_movies_raw" {
     "defaultValueExpression": "CURRENT_DATETIME"
   },
   {
-    "name": "is_error",
-    "type": "BOOLEAN",
+    "name": "load_id",
+    "type": "STRING",
     "mode": "NULLABLE",
-    "defaultValueExpression": "false"
+    "defaultValueExpression": "GENERATE_UUID()"
   }
 ]
 EOF
@@ -190,6 +190,12 @@ resource "google_bigquery_table" "table_ratings_raw" {
     "name": "load_date",
     "type": "DATETIME",
     "mode": "NULLABLE"
+  },
+  {
+    "name": "load_id",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "defaultValueExpression": "GENERATE_UUID()"
   }
 ]
 EOF
