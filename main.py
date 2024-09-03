@@ -23,10 +23,10 @@ def process_movies_csv(event, context):
     csv_data = blob.download_as_string()
     logging.info(f"Downloaded file: {file_name} from bucket: {bucket_name}")
 
-    df = pd.read_csv(StringIO(csv_data.decode('utf-8')))
+    columns = pd.read_csv(StringIO(csv_data.decode('utf-8')))
 
     # Convert all columns to strings
-    df = df.astype(str)
+    columns = columns.astype(str)
 
     bq_client = bigquery.Client()
     dataset_id = os.getenv('BIGQUERY_DATASET')
@@ -38,10 +38,10 @@ def process_movies_csv(event, context):
         write_disposition=bigquery.WriteDisposition.WRITE_APPEND,
     )
 
-    load_job = bq_client.load_table_from_dataframe(df, table_ref, job_config=job_config)
+    load_job = bq_client.load_table_from_dataframe(columns, table_ref, job_config=job_config)
     load_job.result()
 
-    logging.info(f"Loaded {len(df)} rows into {dataset_id}:{table_id}")
+    logging.info(f"Loaded {len(columns)} rows into {dataset_id}:{table_id}")
 
 def process_ratings_csv(event, context):
 
