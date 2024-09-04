@@ -9,23 +9,19 @@ def process_movies_csv(event, context):
     bucket_name = event['bucket']
     file_name = event['name']
 
-    # CSV file matching the pattern
     if not file_name.endswith('.csv') or not file_name.startswith('movies_'):
         logging.info(f"Skipping non-matching file: {file_name}")
         return
 
-    # Load the CSV from GCS
     gcs_client = storage.Client()
     bucket = gcs_client.get_bucket(bucket_name)
     blob = bucket.blob(file_name)
 
-    # Download the CSV file content
     csv_data = blob.download_as_string()
     logging.info(f"Downloaded file: {file_name} from bucket: {bucket_name}")
 
     columns = pd.read_csv(StringIO(csv_data.decode('utf-8')))
 
-    # Convert all columns to strings
     columns = columns.astype(str)
 
     bq_client = bigquery.Client()

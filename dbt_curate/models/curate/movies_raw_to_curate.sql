@@ -16,7 +16,7 @@ WITH source_data AS (
         original_language,
         original_title,
         overview,
-        CAST(popularity as FLOAT42) AS popularity,
+        CAST(popularity as FLOAT64) AS popularity,
         poster_path,
         production_companies,
         production_countries,
