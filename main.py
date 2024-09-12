@@ -9,20 +9,13 @@ def process_movies_csv(event, context):
     bucket_name = event['bucket']
     file_name = event['name']
 
-    if not file_name.endswith('.csv') or not file_name.startswith('movies_'):
-        logging.info(f"Skipping non-matching file: {file_name}")
+    if not_valid_file(file_name, 'movies_'):
+        logging.error(f"Skipping non-matching file: {file_name}")
         return
 
-    gcs_client = storage.Client()
-    bucket = gcs_client.get_bucket(bucket_name)
-    blob = bucket.blob(file_name)
-
-    csv_data = blob.download_as_string()
     logging.info(f"Downloaded file: {file_name} from bucket: {bucket_name}")
 
-    columns = pd.read_csv(StringIO(csv_data.decode('utf-8')))
-
-    columns = columns.astype(str)
+    columns = get_columns(bucket_name, file_name)
 
     bq_client = bigquery.Client()
     dataset_id = os.getenv('BIGQUERY_DATASET')
@@ -39,14 +32,31 @@ def process_movies_csv(event, context):
 
     logging.info(f"Loaded {len(columns)} rows into {dataset_id}:{table_id}")
 
+
+def get_columns(bucket_name, file_name):
+    gcs_client = storage.Client()
+    bucket = gcs_client.get_bucket(bucket_name)
+    blob = bucket.blob(file_name)
+
+    csv_data = blob.download_as_string()
+    columns = pd.read_csv(StringIO(csv_data.decode('utf-8')))
+    columns = columns.astype(str)
+
+    return columns
+
+
+def not_valid_file(file_name, start_with):
+    return not file_name.endswith('.csv') or not file_name.startswith(start_with)
+
+
 def process_ratings_csv(event, context):
 
     bucket_name = event['bucket']
     file_name = event['name']
 
     # CSV file matching the pattern
-    if not file_name.endswith('.csv') or not file_name.startswith('ratings_'):
-        logging.info(f"Skipping non-matching file: {file_name}")
+    if not_valid_file(file_name, 'ratings_'):
+        logging.error(f"Skipping non-matching file: {file_name}")
         return
 
     gcs_client = storage.Client()

@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U airflow"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+
+  airflow:
+    image: custom-airflow:latest
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: always
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      GOOGLE_APPLICATION_CREDENTIALS: /opt/airflow/plugins/keyFile.json
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+      - /Users/manishkumarkhatri/personal/se-data-eng-exercise/dbt_curate:/dbt_curate
+      - ~/.dbt:/home/airflow/.dbt
+    ports:
+      - 8080:8080
+    command: bash -c "airflow db upgrade && airflow users create --username airflow --password airflow --firstname Air --lastname Flow --role Admin --email admin@example.com && airflow webserver"
+
+volumes:
+  postgres-db-volume:

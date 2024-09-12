@@ -8,6 +8,7 @@ sources:
       - name: ratings_raw_to_curate
       - name: movies_raw_to_curate
       - name: latest_ratings
+      - name: load_errors
 
 models:
   - name: movies_raw_to_curate

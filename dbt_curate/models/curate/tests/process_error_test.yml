@@ -1,0 +1,15 @@
+unit_tests:
+  - name: test_process_error
+    model: process_error
+    given:
+      - input: source('movies_data_manish', 'load_errors')
+        rows:
+          - { load_id: '2222', table_name: 'movies_raw', load_time: 2024-08-21 11:28:23.659437 UTC }
+      - input: source('movies_data_manish', 'movies_raw')
+        rows:
+          - { adult: false, belongs_to_collection: 'A', budget: '100', genres: 'crime', homepage: 'test', id: '1', imdb_id: '1', original_language: 'english', original_title: 'ABC', title: 'Test-1', load_date: 2024-08-21T11:28:23.659437, load_id: '2121' }
+          - { adult: false, belongs_to_collection: 'A', budget: '100', genres: 'crime', homepage: 'test', id: '2', imdb_id: '1', original_language: 'english', original_title: 'ABC', title: 'Test-1', load_date: 2024-08-21T11:28:23.659437, load_id: '2222' }
+          - { adult: false, belongs_to_collection: 'A', budget: '100', genres: 'crime', homepage: 'test', id: 'bad id', imdb_id: '1', original_language: 'english', original_title: 'ABC', title: 'Test-1', load_date: 2024-08-21T11:28:23.659437, load_id: '2222' }
+    expect:
+      rows:
+        - { adult: false, belongs_to_collection: 'A', budget: '100', genres: 'crime', homepage: 'test', id: '2', imdb_id: '1', original_language: 'english', original_title: 'ABC', title: 'Test-1', load_date: 2024-08-21T11:28:23.659437, load_id: '2222' }

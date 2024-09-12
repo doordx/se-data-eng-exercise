@@ -5,16 +5,13 @@ unit_tests:
       macros:
         is_incremental: false
     given:
-      - input: source('movies_data_manish', 'ratings_raw')
-        rows:
-          - { userId: '1', movieId: '1', rating: '5', timestamp: '1425942640', load_date: 2024-08-21T11:28:23.659437, load_id: '1212' }
       - input: source('movies_data_manish', 'movies_raw')
         rows:
           - { adult: false, belongs_to_collection: 'A', budget: '100', genres: 'crime', homepage: 'test', id: '1', imdb_id: '1', original_language: 'english', original_title: 'ABC', title: 'Test-1', load_date: 2024-08-21T11:28:23.659437, load_id: '2121' }
+          - { adult: false, belongs_to_collection: 'A', budget: '100', genres: 'crime', homepage: 'test', id: 'bad id', imdb_id: '1', original_language: 'english', original_title: 'ABC', title: 'Test-1', load_date: 2024-08-21T11:28:23.659437, load_id: '2222' }
     expect:
       rows:
-        - { load_id: '2121', table_name: 'movies_raw', load_time: 2024-08-21 11:28:23.659437 UTC }
-        - { load_id: '1212', table_name: 'ratings_raw', load_time: 2024-08-21 11:28:23.659437 UTC }
+        - { load_id: '2222', table_name: 'movies_raw', load_time: 2024-08-21 11:28:23.659437 UTC }
 
   - name: load_errors_increment_mode
     model: load_errors
@@ -22,17 +19,13 @@ unit_tests:
       macros:
         is_incremental: true
     given:
-      - input: source('movies_data_manish', 'ratings_raw')
-        rows:
-          - { userId: '1', movieId: '1', rating: '5', timestamp: '1425942640', load_date: 2024-08-21T11:28:23.659437, load_id: '1212' }
-          - { userId: '1', movieId: '1', rating: '5', timestamp: '1425942640', load_date: 2024-08-22T11:28:23.659437, load_id: '3434' }
-      - input: this
-        rows:
-          - { userId: '1', movieId: '1', rating: '5', timestamp: '1425942640', load_date: 2024-08-21T11:28:23.659437, load_id: '1212' }
       - input: source('movies_data_manish', 'movies_raw')
         rows:
-          - { adult: false, belongs_to_collection: 'A', budget: '100', genres: 'crime', homepage: 'test', id: '1', imdb_id: '1', original_language: 'english', original_title: 'ABC', title: 'Test-1', load_date: 2024-08-22T11:28:23.659437, load_id: '2121' }
+          - { adult: false, belongs_to_collection: 'A', budget: '100', genres: 'crime', homepage: 'test', id: '1', imdb_id: '1', original_language: 'english', original_title: 'ABC', title: 'Test-1', load_date: 2024-08-21T11:28:23.659437, load_id: '1111' }
+          - { adult: false, belongs_to_collection: 'A', budget: '100', genres: 'crime', homepage: 'test', id: 'bad id', imdb_id: '1', original_language: 'english', original_title: 'ABC', title: 'Test-1', load_date: 2024-08-22T11:28:23.659437, load_id: '2121' }
+      - input: this
+        rows:
+          - { load_id: '1111', table_name: 'movies_raw', load_time: 2024-08-21 11:28:23.659437 UTC }
     expect:
       rows:
         - { load_id: '2121', table_name: 'movies_raw', load_time: 2024-08-22 11:28:23.659437 UTC }
-        - { load_id: '3434', table_name: 'ratings_raw', load_time: 2024-08-22 11:28:23.659437 UTC }

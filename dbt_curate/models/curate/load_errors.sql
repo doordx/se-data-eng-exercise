@@ -11,15 +11,8 @@ with source_data AS (
         CAST(load_date as timestamp) AS load_time
     FROM
         {{ source('movies_data_manish', 'movies_raw') }}
-
-    UNION ALL
-
-    SELECT
-        load_id,
-        'ratings_raw' as table_name,
-        CAST(load_date as timestamp) AS load_time
-    FROM
-        {{ source('movies_data_manish', 'ratings_raw') }}
+    WHERE
+        REGEXP_CONTAINS(id, '[^0-9]+')
 )
 
 SELECT * FROM source_data
