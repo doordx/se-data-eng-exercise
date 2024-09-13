@@ -4,7 +4,6 @@ from airflow.operators.python import PythonOperator
 from google.cloud import bigquery
 from datetime import datetime, timedelta
 
-# Define default arguments for the DAG
 default_args = {
     'start_date': datetime(2024, 1, 1),
     'retries': 1,
@@ -51,7 +50,7 @@ with DAG(
 ) as dag:
     process_errors = BashOperator(
         task_id='process_errors',
-        bash_command="cd /dbt_curate && dbt run --models process_error",
+        bash_command="cd /dbt_curate && dbt run --models processed_error",
     )
 
     delete_valid_records_from_error = PythonOperator(
